@@ -1,0 +1,993 @@
+<title>Shikayat Saathi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Mukta:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+/>
+<style>
+  /* Layout: one phone-width column, a 5-step form with a stamped progress rail, like a guided complaint slip */
+  :root {
+    --bg: #eef1f4;
+    --paper: #ffffff;
+    --ink: #15202b;
+    --muted: #5a6878;
+    --line: #d5dce3;
+    --accent: #1d4e89;
+    --accent-soft: #e3ecf7;
+    --accent-ink: #153b69;
+    --danger: #b3261e;
+    --ok: #1e7a4f;
+    --ok-soft: #e3f3ea;
+    --warn: #8a5a00;
+    --warn-soft: #fff3d6;
+    --display: "Rajdhani", "Arial Narrow", system-ui, sans-serif;
+    --body: "Mukta", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f151c;
+      --paper: #17202a;
+      --ink: #e6ecf2;
+      --muted: #9aa8b7;
+      --line: #2b3744;
+      --accent: #7fb0ea;
+      --accent-soft: #1c2e44;
+      --accent-ink: #b9d4f5;
+      --danger: #f2a19b;
+      --ok: #6fcf9c;
+      --ok-soft: #16301f;
+      --warn: #f2c065;
+      --warn-soft: #33280f;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f151c;
+    --paper: #17202a;
+    --ink: #e6ecf2;
+    --muted: #9aa8b7;
+    --line: #2b3744;
+    --accent: #7fb0ea;
+    --accent-soft: #1c2e44;
+    --accent-ink: #b9d4f5;
+    --danger: #f2a19b;
+    --ok: #6fcf9c;
+    --ok-soft: #16301f;
+    --warn: #f2c065;
+    --warn-soft: #33280f;
+    color-scheme: dark;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.55;
+    padding-inline: 16px;
+    padding-block: 20px 48px;
+  }
+  .wrap {
+    max-width: 560px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .banner {
+    background: var(--warn-soft);
+    color: var(--warn);
+    border: 1px solid var(--warn);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .brand {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 30px;
+    letter-spacing: 0.3px;
+    margin: 0;
+    line-height: 1;
+  }
+  .brand span {
+    color: var(--accent);
+  }
+  .tag {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0;
+  }
+  .rail {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .rail div {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--line);
+  }
+  .rail div.on {
+    background: var(--accent);
+  }
+  .steplabel {
+    font-family: var(--display);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  h2 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 26px;
+    line-height: 1.15;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .help {
+    color: var(--muted);
+    margin: 0;
+    font-size: 15px;
+  }
+  .opts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .opt {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font: inherit;
+    cursor: pointer;
+  }
+  .opt:hover {
+    border-color: var(--accent);
+  }
+  .opt[aria-pressed="true"] {
+    border: 2px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 11px 13px;
+  }
+  .opt b {
+    display: block;
+    font-weight: 600;
+  }
+  .opt small {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .dot {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    margin-top: 3px;
+  }
+  .opt[aria-pressed="true"] .dot {
+    border-color: var(--accent);
+    background: radial-gradient(circle, var(--accent) 45%, transparent 50%);
+  }
+  label {
+    font-weight: 500;
+    font-size: 15px;
+  }
+  input[type="text"],
+  input[type="datetime-local"],
+  select,
+  textarea {
+    width: 100%;
+    font: inherit;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .check {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-top: 1px solid var(--line);
+  }
+  .check:first-child {
+    border-top: 0;
+  }
+  .check input {
+    width: 18px;
+    height: 18px;
+    margin-top: 4px;
+    accent-color: var(--accent);
+    flex: none;
+  }
+  .check small {
+    display: block;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .meter {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .meter strong {
+    color: var(--ink);
+  }
+  .file {
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .file .meta {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ok);
+  }
+  .route {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .route.main {
+    border: 2px solid var(--accent);
+    background: var(--accent-soft);
+  }
+  .route .kind {
+    font-family: var(--display);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 12px;
+    color: var(--accent-ink);
+  }
+  .route h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .route p {
+    margin: 0;
+    font-size: 15px;
+  }
+  .route ul {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 15px;
+  }
+  .route a {
+    color: var(--accent-ink);
+  }
+  .route .src {
+    font-size: 13px;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+    padding-top: 8px;
+    margin-top: 4px;
+  }
+  .route .src a {
+    color: var(--muted);
+  }
+  .law {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 2px 6px;
+    white-space: nowrap;
+  }
+  .draft {
+    font-family: var(--body);
+    min-height: 220px;
+    white-space: pre-wrap;
+  }
+  .status {
+    font-size: 14px;
+    color: var(--muted);
+    min-height: 1.4em;
+    margin: 0;
+  }
+  .nav {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  button.btn {
+    font: inherit;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 10px 18px;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+  }
+  button.btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
+  }
+  button.btn:hover {
+    border-color: var(--accent);
+  }
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  a:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .privacy {
+    font-size: 14px;
+    color: var(--muted);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin: 0;
+  }
+  .err {
+    color: var(--danger);
+    font-size: 14px;
+    margin: 0;
+  }
+  .pill {
+    display: inline-block;
+    background: var(--ok-soft);
+    color: var(--ok);
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 2px 10px;
+  }
+  footer {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .card {
+      animation: in 0.25s ease-out;
+    }
+    @keyframes in {
+      from {
+        transform: translateY(6px);
+      }
+      to {
+        transform: none;
+      }
+    }
+  }
+</style>
+
+<div class="wrap">
+  <p class="banner" role="note">
+    <strong>Prototype.</strong> Delhi only. Routes last checked 30 Sep 2026,
+    each with its source. Confirm with the official site before you file.
+  </p>
+
+  <header>
+    <p class="brand">Shikayat <span>Saathi</span></p>
+    <p class="tag">File a police complaint the right way</p>
+  </header>
+
+  <div class="rail" id="rail" aria-hidden="true">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <p class="steplabel" id="steplabel">Step 1 of 5 · What happened</p>
+
+  <main id="screen" class="card" aria-live="polite"></main>
+
+  <p class="privacy">
+    <span
+      >Everything stays in your browser. Nothing is uploaded or posted publicly.
+      There are no officer profiles on this app.</span
+    >
+  </p>
+  <footer>Shikayat Saathi · prototype v0.1 · Delhi only</footer>
+</div>
+
+<script>
+  function PCA(kind, why) {
+    return {
+      kind,
+      name: "Police Complaints Authority, Delhi",
+      why,
+      how: [
+        "Email: pca.delhi@delhi.gov.in",
+        "Office: 10th Floor, Chanderlok Building, Janpath, New Delhi",
+      ],
+      link: ["pca.delhi.gov.in", "https://pca.delhi.gov.in"],
+      src: [
+        [
+          "PCA Delhi: what counts as serious misconduct",
+          "https://pca.delhi.gov.in/pca/welcome-police-complaints-authority",
+        ],
+        ["PCA Delhi: contact", "https://pca.delhi.gov.in/pca/contact-us"],
+        [
+          "National Herald: no anonymous complaints",
+          "https://www.nationalheraldindia.com/national/former-delhi-hc-judge-appointed-police-complaints-authority-chairperson",
+        ],
+      ],
+    };
+  }
+  const ISSUES = {
+    bribe: {
+      label: "Asked for money or a bribe",
+      hint: "Money demanded to let you go, to register a case, for verification, etc.",
+      proof: [
+        [
+          "Audio or video of the demand",
+          "The clearest proof. Keep the original file, do not edit or trim it.",
+        ],
+        ["Date, time and exact place", "Write it down as soon as you can."],
+        [
+          "Officer name, badge or vehicle number",
+          "Only if you saw it. Do not guess.",
+        ],
+        ["UPI or payment record", "If money was paid digitally."],
+        [
+          "Names of witnesses",
+          "People who were with you, if they agree to help.",
+        ],
+      ],
+      main: {
+        kind: "Best place to file",
+        name: "Delhi Police Vigilance Branch",
+        why: "Handles corruption complaints against Delhi Police staff. A bribe demand is an offence under the Prevention of Corruption Act.",
+        how: [
+          "You can approach the Vigilance Branch directly, even on the same day",
+          "Delhi Traffic Police lists how to report corruption by its staff",
+          "Attach your audio or video and the written statement from this app",
+        ],
+        link: [
+          "Report corruption (Delhi Traffic Police)",
+          "https://traffic.delhipolice.gov.in/complaints-against-corruption",
+        ],
+        src: [
+          [
+            "Tribune, Sep 2025: complainant went to Vigilance Branch",
+            "https://www.tribuneindia.com/news/delhi/delhi-police-officer-arrested-for-accepting-rs-15000-bribe",
+          ],
+        ],
+      },
+      extra: PCA(
+        "If it was extortion or threats",
+        "Looks into serious misconduct by police, including extortion. Needs a sworn affidavit. Anonymous complaints are not accepted.",
+      ),
+    },
+    fir: {
+      label: "Refused to register my FIR",
+      hint: "Police did not write down your complaint about a crime.",
+      proof: [
+        [
+          "A copy of your written complaint",
+          "Always give it in writing and keep a copy.",
+        ],
+        [
+          "Receipt or proof you visited",
+          "Stamped copy, diary number, or a photo of the complaint handed over.",
+        ],
+        [
+          "Date, time and police station name",
+          "For Janakpuri this is Janakpuri police station.",
+        ],
+        ["Name of the officer who refused", "Only if you know it."],
+      ],
+      main: {
+        kind: "Best next step",
+        name: "Write to the DCP of your district",
+        why: "If the police station refuses an FIR, you can send the substance of your complaint in writing, by post, to the district's senior officer. In Delhi that is the DCP.",
+        how: [
+          "Janakpuri police station falls under the West District of Delhi Police",
+          "Send it by post and keep the postal receipt",
+          "The law for this is BNSS section 173(4)",
+        ],
+        link: [
+          "BNSS 2023 on India Code",
+          "https://www.indiacode.nic.in/handle/123456789/21419",
+        ],
+        src: [
+          [
+            "BNSS 173(4) and 175(3) explained (Drishti Judiciary)",
+            "https://drishtijudiciary.com/current-affairs/section-173-4-section-175-3-of-bnss",
+          ],
+          [
+            "Districts of Delhi Police (Wikipedia)",
+            "https://en.wikipedia.org/wiki/Districts_of_Delhi_Police",
+          ],
+        ],
+      },
+      extra: {
+        kind: "If the DCP also does not act",
+        name: "Magistrate court",
+        why: "You can apply to the local Magistrate to order an investigation. The application must be backed by an affidavit, so a lawyer or legal aid helps.",
+        how: [
+          "The law for this is BNSS section 175(3)",
+          "Free legal aid is available through Delhi State Legal Services Authority",
+        ],
+        link: ["Delhi Legal Services", "https://dslsa.org"],
+        src: [
+          [
+            "BNSS 173(4) and 175(3) explained (Drishti Judiciary)",
+            "https://drishtijudiciary.com/current-affairs/section-173-4-section-175-3-of-bnss",
+          ],
+          ["DSLSA free legal aid", "https://dslsa.org/free-legal-aid/"],
+        ],
+      },
+    },
+    rude: {
+      label: "Rude or abusive behaviour",
+      hint: "Shouting, insults, threats, or refusing to listen.",
+      proof: [
+        [
+          "Audio or video, if safe to record",
+          "Never put yourself at risk to record.",
+        ],
+        ["Date, time and place", "Which police station, checkpoint or area."],
+        ["What was said, in your own words", "Write it down the same day."],
+        ["Names of witnesses", "If anyone else was there."],
+      ],
+      main: {
+        kind: "Best place to file",
+        name: "Write to the DCP of your district",
+        why: "The DCP supervises every police station in the district. A written complaint about staff behaviour goes on record there.",
+        how: [
+          "Janakpuri police station falls under the West District of Delhi Police",
+          "Send it in writing and keep a copy or receipt",
+        ],
+        link: [
+          "Districts of Delhi Police",
+          "https://en.wikipedia.org/wiki/Districts_of_Delhi_Police",
+        ],
+        src: [
+          [
+            "Districts of Delhi Police (Wikipedia)",
+            "https://en.wikipedia.org/wiki/Districts_of_Delhi_Police",
+          ],
+        ],
+      },
+      extra: {
+        kind: "If there is no reply",
+        name: "CPGRAMS (central grievance portal)",
+        why: "Government of India grievance portal. Delhi Police comes under the Ministry of Home Affairs, so a complaint can be filed to that ministry here.",
+        how: ["Mention your earlier complaint and when you sent it"],
+        link: ["pgportal.gov.in", "https://pgportal.gov.in"],
+        src: [
+          ["CPGRAMS", "https://pgportal.gov.in"],
+          [
+            "Delhi govt vigilance portal: non-corruption complaints go to CPGRAMS or PGMS",
+            "https://vcims.delhi.gov.in/",
+          ],
+        ],
+      },
+    },
+    detain: {
+      label: "Held or arrested without reason",
+      hint: "Detained without being told why, or kept without following the law.",
+      proof: [
+        [
+          "Date, time and where you were taken",
+          "Police station name if you know it.",
+        ],
+        ["How long you were held", "Start and end time."],
+        [
+          "Any medical report",
+          "If you were hurt, get checked and keep the report.",
+        ],
+        [
+          "Names of witnesses or family who came",
+          "People who saw or can confirm it.",
+        ],
+      ],
+      main: PCA(
+        "Best place to file",
+        "Arrest or detention without due process is listed as serious misconduct. Needs a sworn affidavit. Anonymous complaints are not accepted.",
+      ),
+      extra: {
+        kind: "Get legal help",
+        name: "Delhi State Legal Services Authority",
+        why: "Free legal aid. Useful before you sign an affidavit.",
+        how: [],
+        link: ["dslsa.org", "https://dslsa.org"],
+        src: [["DSLSA free legal aid", "https://dslsa.org/free-legal-aid/"]],
+      },
+    },
+  };
+
+  const state = {
+    step: 0,
+    issue: "bribe",
+    area: "Janakpuri, New Delhi",
+    when: "2026-09-12T21:40",
+    proof: { 0: true, 1: true },
+    file: {
+      name: "checkpoint_video.mp4",
+      when: "12 Sep 2026, 9:41 pm",
+      sample: true,
+    },
+    story:
+      "Main Janakpuri ke paas traffic checkpoint pe tha. Ek officer ne gaadi roki aur bola 500 do warna challan banega. Maine poocha kis cheez ka challan toh bola bas de do. Maine video bana liya. Koi receipt nahi di.",
+    draft: "",
+  };
+
+  const LABELS = [
+    "What happened",
+    "Your proof",
+    "Where to file",
+    "Your statement",
+    "Ready to file",
+  ];
+  const $ = (s) => document.querySelector(s);
+  const esc = (s) =>
+    String(s).replace(
+      /[&<>"']/g,
+      (c) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[c],
+    );
+
+  function render() {
+    document
+      .querySelectorAll("#rail div")
+      .forEach((d, i) => d.classList.toggle("on", i <= state.step));
+    $("#steplabel").textContent =
+      `Step ${state.step + 1} of 5 · ${LABELS[state.step]}`;
+    const el = $("#screen");
+    el.innerHTML = [s1, s2, s3, s4, s5][state.step]();
+    wire[state.step]?.();
+  }
+
+  function nav(back, next, nextLabel) {
+    return `<div class="nav">${back ? `<button class="btn" id="back">Back</button>` : "<span></span>"}<button class="btn primary" id="next">${nextLabel || "Next"}</button></div>`;
+  }
+  function bindNav() {
+    $("#back") &&
+      ($("#back").onclick = () => {
+        state.step--;
+        render();
+      });
+    $("#next") &&
+      ($("#next").onclick = () => {
+        if (validate()) {
+          state.step++;
+          render();
+        }
+      });
+  }
+  function validate() {
+    if (state.step === 3 && !state.story.trim()) {
+      $("#storyErr").textContent =
+        "Write a few lines about what happened first.";
+      return false;
+    }
+    return true;
+  }
+
+  function s1() {
+    return `<h2>What happened?</h2>
+  <p class="help">Pick the closest one. It decides where your complaint should go.</p>
+  <div class="opts">${Object.entries(ISSUES)
+    .map(
+      ([k, v]) => `
+    <button class="opt" data-k="${k}" aria-pressed="${state.issue === k}"><span class="dot"></span><span><b>${v.label}</b><small>${v.hint}</small></span></button>`,
+    )
+    .join("")}
+  </div>
+  <div class="row">
+    <div class="field"><label for="area">Area</label><input type="text" id="area" value="${esc(state.area)}"></div>
+    <div class="field"><label for="when">When</label><input type="datetime-local" id="when" value="${state.when}"></div>
+  </div>
+  ${nav(false)}`;
+  }
+  function s2() {
+    const it = ISSUES[state.issue];
+    const done = it.proof.filter((_, i) => state.proof[i]).length;
+    return `<h2>Collect your proof</h2>
+  <p class="help">Tick what you have. More proof means your complaint is harder to ignore.</p>
+  <div>${it.proof
+    .map(
+      (p, i) => `
+    <label class="check"><input type="checkbox" data-i="${i}" ${state.proof[i] ? "checked" : ""}><span>${p[0]}<small>${p[1]}</small></span></label>`,
+    )
+    .join("")}</div>
+  <p class="meter"><strong>${done} of ${it.proof.length}</strong> ready</p>
+  <div class="file">
+    <label for="fileIn">Add a photo, audio or video (optional)</label>
+    <input type="file" id="fileIn" accept="image/*,audio/*,video/*">
+    ${state.file ? `<span class="meta">✓ ${esc(state.file.name)} · recorded ${esc(state.file.when)}${state.file.sample ? " · example" : ""}</span>` : ""}
+    <small class="help">The file is only read on your device to show its date. It is not uploaded.</small>
+  </div>
+  ${nav(true)}`;
+  }
+  function routeCard(r, main) {
+    return `<div class="route ${main ? "main" : ""}"><span class="kind">${r.kind}</span><h3>${r.name}</h3><p>${r.why}</p>
+  ${r.how.length ? `<ul>${r.how.map((h) => `<li>${h.replace(/BNSS section [\d()]+/, (m) => `<span class="law">${m}</span>`)}</li>`).join("")}</ul>` : ""}
+  <p><a href="${r.link[1]}" target="_blank" rel="noopener">${r.link[0]} ↗</a></p>
+  ${r.src?.length ? `<p class="src">Source: ${r.src.map((s) => `<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join(" · ")}</p>` : ""}</div>`;
+  }
+  function s3() {
+    const it = ISSUES[state.issue];
+    return `<h2>Where to file</h2>
+  <p class="help">Based on: <strong>${it.label.toLowerCase()}</strong> in ${esc(state.area)}.</p>
+  ${routeCard(it.main, true)}${routeCard(it.extra, false)}
+  <p class="help">This app does not file for you. You submit on the official channel, so the complaint has legal weight.</p>
+  ${nav(true)}`;
+  }
+  function s4() {
+    return `<h2>Tell us what happened</h2>
+  <p class="help">Write in your own words. Hindi, English or Hinglish is fine. We will turn it into a clear, formal statement.</p>
+  <div class="field"><label for="story">What happened</label><textarea id="story">${esc(state.story)}</textarea></div>
+  <p class="err" id="storyErr"></p>
+  ${nav(true, true, "Write my statement")}`;
+  }
+  function s5() {
+    return `<h2>Your statement is ready</h2>
+  <p class="help">Read it once, fix anything that is wrong, then copy it into the official form.</p>
+  <div class="field"><label for="draft">Statement</label><textarea id="draft" class="draft"></textarea></div>
+  <p class="status" id="status"></p>
+  <div class="nav"><button class="btn" id="back">Back</button><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="regen">Rewrite</button><button class="btn primary" id="copy">Copy statement</button></span></div>
+  <div class="route"><span class="kind">Next</span><h3>File it at: ${ISSUES[state.issue].main.name}</h3>
+  <p><a href="${ISSUES[state.issue].main.link[1]}" target="_blank" rel="noopener">Open ${ISSUES[state.issue].main.link[0]} ↗</a></p>
+  <p class="help">Save the complaint number you get. <span class="pill">Tracking comes in the next version</span></p></div>
+  <button class="btn" id="restart">Start a new complaint</button>`;
+  }
+
+  function whenText() {
+    try {
+      const d = new Date(state.when);
+      return d.toLocaleString("en-IN", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      });
+    } catch (e) {
+      return state.when;
+    }
+  }
+  function proofText() {
+    const it = ISSUES[state.issue];
+    const have = it.proof.filter((_, i) => state.proof[i]).map((p) => p[0]);
+    if (state.file)
+      have.push(`File: ${state.file.name} (recorded ${state.file.when})`);
+    return have;
+  }
+  function templateDraft() {
+    const it = ISSUES[state.issue];
+    return `To,
+${it.main.name}
+
+Subject: Complaint regarding ${it.label.toLowerCase()}
+
+On ${whenText()}, at ${state.area}, the following incident took place:
+
+${state.story.trim()}
+
+Evidence available:
+${proofText()
+  .map((p) => "- " + p)
+  .join("\n")}
+
+I request that this complaint be looked into and appropriate action be taken. I am ready to share the original evidence and cooperate with any inquiry.
+
+Name:
+Phone:
+Address:
+Date:`;
+  }
+
+  let samplePromise = null;
+  function getSample() {
+    return (samplePromise ||= window.claude?.use
+      ? window.claude.use("sample")
+      : Promise.resolve(null));
+  }
+  let ctl = null;
+
+  async function writeDraft(fresh) {
+    const box = $("#draft"),
+      st = $("#status");
+    if (!box) return;
+    const sample = await getSample();
+    if (!sample) {
+      box.value = state.draft = templateDraft();
+      st.textContent =
+        "Filled from a template. AI writing works when opened inside Claude.";
+      return;
+    }
+    const it = ISSUES[state.issue];
+    const prompt = `You help a citizen in Delhi, India write a formal complaint about police conduct, to submit to: ${it.main.name}.
+Rewrite their account into a clear, factual complaint letter in simple formal English.
+Rules: state only facts they gave. Do not invent names, badge numbers, amounts or details. Do not add emotions, accusations beyond what they said, or legal conclusions. If a detail is missing, leave a blank like [officer name, if known]. Keep it under 250 words. No markdown. Use plain line breaks.
+Structure: "To," and the authority, a Subject line, a short account of what happened (date, time, place, what was said and done), a list of evidence available, a one-line request for inquiry, then blank lines for Name, Phone, Address, Date.
+
+Issue type: ${it.label}
+Date and time: ${whenText()}
+Place: ${state.area}
+Their account (may be Hindi/Hinglish): """${state.story.trim()}"""
+Evidence they have: ${proofText().join("; ")}`;
+    ctl?.abort();
+    ctl = new AbortController();
+    box.value = "";
+    st.textContent = "Writing your statement…";
+    try {
+      const r = await sample(prompt, {
+        signal: ctl.signal,
+        cache: fresh ? false : true,
+        onText: ({ text }) => {
+          box.value = text;
+        },
+      });
+      state.draft = box.value = r.text.trim();
+      st.textContent = r.truncated
+        ? "The statement was cut short. Try Rewrite."
+        : "Written by AI from your words. Check every fact before filing.";
+    } catch (e) {
+      if (e.code === "cancelled") return;
+      box.value = state.draft = templateDraft();
+      st.textContent =
+        e.code === "rate_limited"
+          ? "Too many requests right now. Showing a template instead."
+          : "AI writing is not available here. Showing a template you can edit.";
+    }
+  }
+
+  const wire = [
+    () => {
+      document.querySelectorAll(".opt").forEach(
+        (b) =>
+          (b.onclick = () => {
+            if (state.issue !== b.dataset.k) {
+              state.issue = b.dataset.k;
+              state.proof = {};
+            }
+            document
+              .querySelectorAll(".opt")
+              .forEach((x) => x.setAttribute("aria-pressed", x === b));
+          }),
+      );
+      $("#area").oninput = (e) => (state.area = e.target.value);
+      $("#when").oninput = (e) => (state.when = e.target.value);
+      bindNav();
+    },
+    () => {
+      document.querySelectorAll(".check input").forEach(
+        (c) =>
+          (c.onchange = () => {
+            state.proof[c.dataset.i] = c.checked;
+            const it = ISSUES[state.issue];
+            $(".meter").innerHTML =
+              `<strong>${it.proof.filter((_, i) => state.proof[i]).length} of ${it.proof.length}</strong> ready`;
+          }),
+      );
+      $("#fileIn").onchange = (e) => {
+        const f = e.target.files[0];
+        if (!f) return;
+        const d = new Date(f.lastModified);
+        state.file = {
+          name: f.name,
+          when: d.toLocaleString("en-IN", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+          }),
+        };
+        render();
+      };
+      bindNav();
+    },
+    bindNav,
+    () => {
+      $("#story").oninput = (e) => {
+        state.story = e.target.value;
+        $("#storyErr").textContent = "";
+      };
+      bindNav();
+    },
+    () => {
+      $("#back").onclick = () => {
+        ctl?.abort();
+        state.step--;
+        render();
+      };
+      $("#draft").oninput = (e) => (state.draft = e.target.value);
+      $("#regen").onclick = () => writeDraft(true);
+      $("#copy").onclick = async () => {
+        const t = $("#draft").value;
+        try {
+          await navigator.clipboard.writeText(t);
+          $("#status").textContent =
+            "Copied. Paste it into the official complaint form.";
+        } catch (e) {
+          $("#draft").select();
+          $("#status").textContent =
+            "Selected. Press Ctrl+C or long-press to copy.";
+        }
+      };
+      $("#restart").onclick = () => {
+        ctl?.abort();
+        Object.assign(state, {
+          step: 0,
+          issue: "bribe",
+          proof: {},
+          file: null,
+          story: "",
+          draft: "",
+        });
+        render();
+      };
+      if (state.draft) {
+        $("#draft").value = state.draft;
+      } else writeDraft(false);
+    },
+  ];
+
+  render();
+</script>
