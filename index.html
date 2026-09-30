@@ -432,6 +432,99 @@
         padding: 2px 6px;
         white-space: nowrap;
       }
+      .rights {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        background: var(--paper);
+      }
+      .rights .kind,
+      .route .kind {
+        font-family: var(--display);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 12px;
+        color: var(--accent-ink);
+      }
+      .rights h3,
+      .legalhelp h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .rights ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .rights li {
+        display: grid;
+        grid-template-columns: 96px minmax(0, 1fr);
+        gap: 10px;
+        align-items: start;
+        font-size: 15px;
+      }
+      .rlaw {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--accent-ink);
+        background: var(--accent-soft);
+        border-radius: 4px;
+        padding: 2px 6px;
+        text-align: center;
+        margin-top: 2px;
+      }
+      .rights .src,
+      .legalhelp .src {
+        font-size: 13px;
+        color: var(--muted);
+        border-top: 1px solid var(--line);
+        padding-top: 8px;
+        margin: 4px 0 0;
+      }
+      .rights .src a,
+      .legalhelp .src a {
+        color: var(--muted);
+      }
+      .disc {
+        display: inline-block;
+        background: var(--warn-soft);
+        color: var(--warn);
+        border-radius: 4px;
+        padding: 1px 8px;
+        font-size: 12px;
+        font-weight: 600;
+        margin: 0 6px 4px 0;
+      }
+      .legalhelp {
+        background: var(--ok-soft);
+        color: var(--ok);
+        border-radius: 10px;
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .legalhelp p {
+        margin: 0;
+        font-size: 15px;
+        color: var(--ink);
+      }
+      .legalhelp h3 {
+        color: var(--ok);
+      }
+      .legalhelp .num {
+        font-family: var(--mono);
+        color: var(--ok);
+        font-size: 16px;
+      }
       .draft {
         font-family: var(--body);
         min-height: 220px;
@@ -517,6 +610,13 @@
       }
       /* Small phones: tighter spacing so the form starts higher */
       @media (max-width: 420px) {
+        .rights li {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 4px;
+        }
+        .rlaw {
+          justify-self: start;
+        }
         body {
           padding-block: 14px 32px;
         }
@@ -809,6 +909,140 @@
         },
       };
 
+      const DRISHTI_FIR = [
+        "Drishti Judiciary: Zero FIR and e-FIR",
+        "https://www.drishtijudiciary.com/to-the-point/bharatiya-nagarik-suraksha-sanhita-&-code-of-criminal-procedure/zero-fir-under-bharatiya-nagarik-suraksha-sanhita-2023-bnss",
+      ];
+      const RIGHTS = {
+        fir: {
+          title: "If police refuse your FIR",
+          items: [
+            [
+              "BNSS 173(1)",
+              "You can file at any police station, even outside your area (Zero FIR), or online. An online FIR must be signed within 3 days.",
+            ],
+            ["BNSS 173(2)", "You get a free copy of the FIR right away."],
+            [
+              "BNSS 173(4)",
+              "If refused, post your complaint to the DCP of the district.",
+            ],
+            [
+              "BNSS 175(3)",
+              "If the DCP also does not act, apply to a Magistrate with an affidavit.",
+            ],
+            [
+              "BNS 199(c)",
+              "For some serious offences, like sexual offences and acid attacks, refusing to record the FIR is itself a crime: 6 months to 2 years in jail.",
+            ],
+          ],
+          src: [
+            DRISHTI_FIR,
+            [
+              "Drishti Judiciary: BNSS 173(4) and 175(3)",
+              "https://drishtijudiciary.com/current-affairs/section-173-4-section-175-3-of-bnss",
+            ],
+            [
+              "ApniLaw: BNS 199",
+              "https://www.apnilaw.com/bare-act/bns/section-199-bharatiya-nyaya-sanhita-bns-public-servant-disobeying-direction-under-law/",
+            ],
+            [
+              "BNSS on India Code",
+              "https://www.indiacode.nic.in/handle/123456789/21419",
+            ],
+          ],
+        },
+        bribe: {
+          title: "If you were asked for a bribe",
+          items: [
+            [
+              "PC Act s.7",
+              "A public servant who demands or takes a bribe commits an offence.",
+            ],
+            [
+              "PC Act s.8",
+              "Giving a bribe is also an offence. If you were forced to pay, report it within 7 days of paying.",
+            ],
+          ],
+          src: [
+            [
+              "Mondaq: compelled bribe givers and the 7-day rule",
+              "https://www.mondaq.com/india/white-collar-crime-anti-corruption-fraud/1468888/forced-corruption-unveiling-legal-defences-for-those-compelled-to-bribe",
+            ],
+            [
+              "ApniLaw: section 8, the bribe giver",
+              "https://www.apnilaw.com/legal-articles/acts/bribing-a-public-servant-what-the-law-says-about-the-bribe-giver-section-8/",
+            ],
+          ],
+        },
+        detain: {
+          title: "If you or someone you know is arrested",
+          items: [
+            [
+              "BNSS 47",
+              "You must be told why you are arrested. In bailable offences, bail is your right.",
+            ],
+            [
+              "BNSS 48",
+              "Police must inform a relative or friend about the arrest and where you are held.",
+            ],
+            [
+              "BNSS 58",
+              "You must be produced before a Magistrate within 24 hours, not counting travel time.",
+            ],
+            [
+              "Article 22",
+              "You have the right to consult and be defended by a lawyer.",
+            ],
+            [
+              "BSA s.23",
+              "A confession made to police cannot be used as evidence against you.",
+            ],
+          ],
+          src: [
+            [
+              "Sansa Legal: rights when arrested under BNSS",
+              "https://www.sansalegal.com/post/what-are-your-rights-if-you-are-arrested-in-india-under-bnss-2023-complete-guide",
+            ],
+          ],
+        },
+        rude: {
+          title: "If police were rude or abusive",
+          items: [
+            [
+              "Departmental",
+              "Rudeness alone is usually handled as a departmental complaint, not a criminal case. A written complaint puts it on record.",
+            ],
+            [
+              "PCA Delhi",
+              "If it involved threats, extortion or detention without due process, it counts as serious misconduct and can go to the Police Complaints Authority.",
+            ],
+          ],
+          src: [
+            [
+              "PCA Delhi: what counts as serious misconduct",
+              "https://pca.delhi.gov.in/pca/welcome-police-complaints-authority",
+            ],
+          ],
+        },
+      };
+      const LEGAL_HELP_SRC = "https://dslsa.org/free-legal-aid-faqs/";
+
+      function rightsCard(key) {
+        const r = RIGHTS[key];
+        if (!r) return "";
+        return `<section class="rights" aria-label="Know your rights">
+    <span class="kind">Know your rights</span>
+    <h3>${r.title}</h3>
+    <ul>${r.items.map((i) => `<li><span class="rlaw">${i[0]}</span><span>${i[1]}</span></li>`).join("")}</ul>
+    <p class="src"><span class="disc">General information, not legal advice</span> Source: ${r.src.map((s) => `<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join(" · ")}</p>
+  </section>
+  <section class="legalhelp" aria-label="Free legal help">
+    <h3>Free legal help</h3>
+    <p>Call <strong class="num">15100</strong> or <strong class="num">1516</strong> (24×7). Free lawyer for all women, anyone earning under ₹3 lakh a year, people in custody, SC/ST and more.</p>
+    <p class="src">Source: <a href="${LEGAL_HELP_SRC}" target="_blank" rel="noopener">Delhi State Legal Services Authority</a></p>
+  </section>`;
+      }
+
       const state = {
         step: 0,
         issue: "bribe",
@@ -933,6 +1167,7 @@
         return `<h2>Where to file</h2>
   <p class="help">Based on: <strong>${it.label.toLowerCase()}</strong> in ${esc(state.area)}.</p>
   ${routeCard(it.main, true)}${routeCard(it.extra, false)}
+  ${rightsCard(state.issue)}
   <p class="help">This app does not file for you. You submit on the official channel, so the complaint has legal weight.</p>
   ${nav(true)}`;
       }
