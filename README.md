@@ -6,11 +6,11 @@ Most people who face a bribe demand, a refused FIR, or rude behaviour from polic
 
 ## How it works
 
-1. **What happened:** pick the issue (bribe, FIR refused, rude behaviour, detained without reason)
+1. **What happened:** pick local police or traffic police, then the issue (bribe, FIR refused, rude behaviour, detained without reason)
 2. **Your proof:** a checklist of evidence for that issue
 3. **Where to file:** the right official body, with a source link for every route, plus a "Know your rights" box with the relevant law sections and free legal aid helplines
 4. **Your statement:** write what happened in Hindi, English or Hinglish
-5. **Ready to file:** get a clean, formal complaint letter to copy into the official form
+5. **Ready to file:** get a clean, formal complaint letter, and send it by email to the officer in charge and their seniors (West District / Janakpuri for now). The email opens in the user's own email app, so it comes from them.
 
 ## What it does not do
 
@@ -32,16 +32,6 @@ Most people who face a bribe demand, a refused FIR, or rude behaviour from polic
 - The server builds the prompt and calls OpenAI. The API key never reaches the browser.
 - The browser can only send one of 4 issue types, so the endpoint can't be used as a general chatbot
 - The user's text is capped at 2,000 characters
-
-## Run it
-
-1. Deploy the repo on Vercel
-2. In Vercel, go to Project Settings → Environment Variables and add:
-   - `OPENAI_API_KEY`: your OpenAI key
-   - `OPENAI_MODEL` (optional): defaults to `gpt-5.4-mini`
-3. Redeploy
-
-Opening `index.html` directly works too, but the AI step will fall back to the template.
 
 ## Disclaimer
 

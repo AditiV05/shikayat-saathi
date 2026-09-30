@@ -14,6 +14,11 @@ const ISSUES = {
   detain: "Held or arrested without reason",
 };
 
+const FORCES = {
+  local: "Local police station",
+  traffic: "Traffic police",
+};
+
 function clean(value, max) {
   return String(value ?? "")
     .replace(/\s+/g, " ")
@@ -32,6 +37,7 @@ module.exports = async function handler(req, res) {
 
   const body = req.body || {};
   const issue = ISSUES[body.issue];
+  const force = FORCES[body.force] || "Not specified";
   const story = String(body.story ?? "")
     .trim()
     .slice(0, MAX_STORY);
@@ -82,6 +88,7 @@ Date:`;
 
   const details = `Authority: ${authority || "[authority]"}
 Issue type: ${issue}
+Police involved: ${force}
 Date and time: ${when || "[date and time]"}
 Place: ${area || "[place]"}
 Evidence they have: ${evidence.length ? evidence.join("; ") : "none listed"}
