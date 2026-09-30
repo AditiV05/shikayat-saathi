@@ -25,10 +25,6 @@ Most people who face a bribe demand, a refused FIR, or rude behaviour from polic
 - Complaint routes last checked on 30 Sep 2026. Each route shows its source in the app.
 - The statement is filled from a template. AI drafting is the next step.
 
-## Run it
-
-It's a single HTML file. Open `index.html` in a browser, or deploy the folder to any static host (Vercel, Netlify, GitHub Pages).
-
 ## Disclaimer
 
 This is not legal advice. Always confirm the route with the official website before filing.
