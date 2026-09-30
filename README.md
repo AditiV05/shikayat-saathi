@@ -23,11 +23,24 @@ Most people who face a bribe demand, a refused FIR, or rude behaviour from polic
 
 - Prototype, Delhi only
 - Complaint routes last checked on 30 Sep 2026. Each route shows its source in the app.
-- The statement is filled from a template. AI drafting is the next step.
+- The statement is written by OpenAI through a Vercel serverless function (`api/draft.js`). If the AI is unavailable, the app falls back to a template.
+
+## How the AI part works
+
+- The browser sends the issue type, date, place, proof list and the user's own words to `/api/draft`
+- The server builds the prompt and calls OpenAI. The API key never reaches the browser.
+- The browser can only send one of 4 issue types, so the endpoint can't be used as a general chatbot
+- The user's text is capped at 2,000 characters
 
 ## Run it
 
-It's a single HTML file. Open `index.html` in a browser, or deploy the folder to any static host (Vercel, Netlify, GitHub Pages).
+1. Deploy the repo on Vercel
+2. In Vercel, go to Project Settings → Environment Variables and add:
+   - `OPENAI_API_KEY`: your OpenAI key
+   - `OPENAI_MODEL` (optional): defaults to `gpt-5.4-mini`
+3. Redeploy
+
+Opening `index.html` directly works too, but the AI step will fall back to the template.
 
 ## Disclaimer
 
