@@ -16,7 +16,8 @@ Most people who face a bribe demand, a refused FIR, or rude behaviour from polic
 
 - No officer profiles or ratings
 - Nothing is posted publicly
-- No uploads. Everything stays in the browser.
+- No uploads. Proof files are only read in the browser to show their date.
+- Only the text from step 4 is sent to OpenAI to write the letter. The app does not save it.
 - It does not file the complaint. The user files it on the official channel, so it has legal weight.
 
 ## Status
