@@ -32,6 +32,8 @@ Most people who face a bribe demand, a refused FIR, or rude behaviour from polic
 - The browser can only send one of 4 issue types, so the endpoint can't be used as a general chatbot
 - The user's text is capped at 2,000 characters
 
+<<<<<<< HEAD
+
 ## Run it
 
 1. Deploy the repo on Vercel
@@ -41,6 +43,10 @@ Most people who face a bribe demand, a refused FIR, or rude behaviour from polic
 3. Redeploy
 
 Opening `index.html` directly works too, but the AI step will fall back to the template.
+
+=======
+
+> > > > > > > d870986e48a4d8d6aefd4d0d0fe2e0cd440d5e3d
 
 ## Disclaimer
 
