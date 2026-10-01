@@ -610,6 +610,17 @@
         border-color: var(--accent);
         color: var(--paper);
       }
+      .meta.nodate {
+        color: var(--muted);
+      }
+      .fwarn {
+        display: block;
+        background: var(--warn-soft);
+        color: var(--warn);
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-size: 14px;
+      }
       .draft {
         font-family: var(--body);
         min-height: 220px;
@@ -781,6 +792,7 @@
       </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js"></script>
     <script>
       function PCA(kind, why) {
         return {
@@ -1235,7 +1247,7 @@
         proof: { 0: true, 1: true },
         file: {
           name: "checkpoint_video.mp4",
-          when: "12 Sep 2026, 9:41 pm",
+          taken: "2026-09-12T21:41",
           sample: true,
         },
         story:
@@ -1344,8 +1356,8 @@
   <div class="file">
     <label for="fileIn">Add a photo, audio or video (optional)</label>
     <input type="file" id="fileIn" accept="image/*,audio/*,video/*">
-    ${state.file ? `<span class="meta">✓ ${esc(state.file.name)} · recorded ${esc(state.file.when)}${state.file.sample ? " · example" : ""}</span>` : ""}
-    <small class="help">The file is only read on your device to show its date. It is not uploaded.</small>
+    ${fileLine()}
+    <small class="help">The file is only read on your device to find when it was taken. It is not uploaded.</small>
   </div>
   ${nav(true)}`;
       }
@@ -1410,11 +1422,108 @@
           return state.when;
         }
       }
+
+      // ---- Real capture date of a proof file ----
+      // The browser's file.lastModified is when the file was last saved on this device
+      // (downloaded, copied, forwarded), NOT when it was recorded. So we read the date
+      // stored inside the file instead, and say so honestly when there is none.
+      const fmtDate = (d) =>
+        new Date(d).toLocaleString("en-IN", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+        });
+
+      async function photoDate(file) {
+        if (!window.exifr) return null;
+        try {
+          const t = await exifr.parse(file, ["DateTimeOriginal", "CreateDate"]);
+          const d = t?.DateTimeOriginal || t?.CreateDate;
+          return d instanceof Date && !isNaN(d) ? d : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      // MP4 / MOV videos keep their creation time in the "mvhd" box,
+      // counted in seconds from 1 Jan 1904 (UTC). It can sit at the start or the end of the file.
+      async function videoDate(file) {
+        const CHUNK = 4 * 1024 * 1024;
+        const parts = [[0, Math.min(file.size, CHUNK)]];
+        if (file.size > CHUNK)
+          parts.push([Math.max(0, file.size - CHUNK), file.size]);
+        for (const [a, b] of parts) {
+          const buf = new Uint8Array(await file.slice(a, b).arrayBuffer());
+          for (let i = 4; i < buf.length - 24; i++) {
+            if (
+              buf[i] === 0x6d &&
+              buf[i + 1] === 0x76 &&
+              buf[i + 2] === 0x68 &&
+              buf[i + 3] === 0x64
+            ) {
+              // "mvhd"
+              const dv = new DataView(buf.buffer, buf.byteOffset + i + 4);
+              const version = dv.getUint8(0);
+              const secs =
+                version === 1 ? Number(dv.getBigUint64(4)) : dv.getUint32(4);
+              if (!secs) return null;
+              const d = new Date(Date.UTC(1904, 0, 1) + secs * 1000);
+              return d.getFullYear() > 2000 && d <= new Date() ? d : null;
+            }
+          }
+        }
+        return null;
+      }
+
+      async function captureDate(file) {
+        try {
+          if (file.type.startsWith("image/")) return await photoDate(file);
+          if (
+            file.type.startsWith("video/") ||
+            /\.(mp4|mov|m4v|3gp)$/i.test(file.name)
+          )
+            return await videoDate(file);
+        } catch (e) {}
+        return null; // audio and anything else: we don't guess
+      }
+
+      // Warn if the file was taken on a different day than the incident
+      function dateMismatch() {
+        if (!state.file?.taken || !state.when) return false;
+        const a = new Date(state.file.taken),
+          b = new Date(state.when);
+        if (isNaN(a) || isNaN(b)) return false;
+        return Math.abs(a - b) > 24 * 60 * 60 * 1000;
+      }
+
+      function fileLine() {
+        const f = state.file;
+        if (!f) return "";
+        if (f.reading)
+          return `<span class="meta">Reading ${esc(f.name)}…</span>`;
+        const date = f.taken
+          ? `taken ${fmtDate(f.taken)}${f.sample ? " · example" : ""}`
+          : `capture date not found in this file`;
+        const warn = dateMismatch()
+          ? `<span class="fwarn">This file was taken on ${fmtDate(f.taken)}, but the incident was on ${whenText()}. Check it is the right file.</span>`
+          : "";
+        const none = !f.taken
+          ? `<small class="help">Photos sent on WhatsApp, screenshots and edited files usually lose this date. The original from your camera is best.</small>`
+          : "";
+        return `<span class="meta${f.taken ? "" : " nodate"}">✓ ${esc(f.name)} · ${date}</span>${warn}${none}`;
+      }
+
       function proofText() {
         const it = ISSUES[state.issue];
         const have = it.proof.filter((_, i) => state.proof[i]).map((p) => p[0]);
-        if (state.file)
-          have.push(`File: ${state.file.name} (recorded ${state.file.when})`);
+        if (state.file && !state.file.reading)
+          have.push(
+            state.file.taken
+              ? `File: ${state.file.name} (taken ${fmtDate(state.file.taken)})`
+              : `File: ${state.file.name}`,
+          );
         return have;
       }
       function templateDraft() {
@@ -1523,21 +1632,14 @@ Date:`;
                   `<strong>${it.proof.filter((_, i) => state.proof[i]).length} of ${it.proof.length}</strong> ready`;
               }),
           );
-          $("#fileIn").onchange = (e) => {
+          $("#fileIn").onchange = async (e) => {
             const f = e.target.files[0];
             if (!f) return;
-            const d = new Date(f.lastModified);
-            state.file = {
-              name: f.name,
-              when: d.toLocaleString("en-IN", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-                hour: "numeric",
-                minute: "2-digit",
-              }),
-            };
+            state.file = { name: f.name, reading: true };
             render();
+            const d = await captureDate(f);
+            state.file = { name: f.name, taken: d ? d.toISOString() : null };
+            if (state.step === 1) render();
           };
           bindNav();
         },
