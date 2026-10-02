@@ -621,6 +621,31 @@
         padding: 6px 10px;
         font-size: 14px;
       }
+      .demo {
+        display: flex;
+        gap: 10px 14px;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        background: var(--warn-soft);
+        border: 1px solid var(--warn);
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+      .demo p {
+        margin: 0;
+        font-size: 14px;
+        color: var(--warn);
+        flex: 1 1 220px;
+      }
+      .demo .btn {
+        padding: 7px 12px;
+        font-size: 14px;
+      }
+      .check.confirm {
+        border-top: 0;
+        padding: 4px 0 0;
+      }
       .draft {
         font-family: var(--body);
         min-height: 220px;
@@ -1245,6 +1270,7 @@
         area: "Janakpuri, New Delhi",
         when: "2026-09-12T21:40",
         proof: { 0: true, 1: true },
+        demo: true, // the form opens with an example so visitors can see how it works
         file: {
           name: "checkpoint_video.mp4",
           taken: "2026-09-12T21:41",
@@ -1288,6 +1314,7 @@
         const el = $("#screen");
         el.innerHTML = [s1, s2, s3, s4, s5][state.step]();
         wire[state.step]?.();
+        $("#clearDemo") && ($("#clearDemo").onclick = clearDemo);
       }
 
       function nav(back, next, nextLabel) {
@@ -1316,8 +1343,24 @@
         return true;
       }
 
+      function demoNote() {
+        if (!state.demo) return "";
+        return `<div class="demo" role="note"><p><strong>Example filled in.</strong> This shows how the app works. Replace it with what happened to you.</p>
+  <button class="btn" id="clearDemo">Start my own complaint</button></div>`;
+      }
+      function clearDemo() {
+        Object.assign(state, {
+          demo: false,
+          proof: {},
+          file: null,
+          story: "",
+          draft: "",
+        });
+        render();
+      }
       function s1() {
         return `<h2>What happened?</h2>
+  ${demoNote()}
   <div class="field"><span class="flabel" id="forceLbl">Which police?</span>
   <div class="forces" role="group" aria-labelledby="forceLbl">${Object.entries(
     FORCES,
@@ -1345,6 +1388,7 @@
         const it = ISSUES[state.issue];
         const done = it.proof.filter((_, i) => state.proof[i]).length;
         return `<h2>Collect your proof</h2>
+  ${demoNote()}
   <p class="help">Tick what you have. More proof means your complaint is harder to ignore.</p>
   <div>${it.proof
     .map(
@@ -1378,6 +1422,7 @@
       }
       function s4() {
         return `<h2>Tell us what happened</h2>
+  ${demoNote()}
   <p class="help">Write in your own words. Hindi, English or Hinglish is fine. We will turn it into a clear, formal statement.</p>
   <div class="field"><label for="story">What happened</label><textarea id="story">${esc(state.story)}</textarea></div>
   <p class="err" id="storyErr"></p>
@@ -1385,6 +1430,7 @@
       }
       function s5() {
         return `<h2>Your statement is ready</h2>
+  ${demoNote()}
   <p class="help">Read it once, fix anything that is wrong, then copy it into the official form.</p>
   <div class="field"><label for="draft">Statement</label><textarea id="draft" class="draft"></textarea></div>
   <p class="status" id="status"></p>
@@ -1397,6 +1443,8 @@
         `<li><span class="rtag">${i === 0 ? "To" : "CC"}</span><span><b>${o.role}</b><span class="addr">${o.email}</span></span></li>`,
     )
     .join("")}</ul>
+  <label class="check confirm"><input type="checkbox" id="confirmReal"><span>This really happened to me, and the details in the letter are true.<small>This sends a real complaint to real police officers. A false complaint can be an offence.</small></span></label>
+  <p class="err" id="confirmErr"></p>
   <div class="mailbtns"><a class="btn primary" id="mail" href="#">Open in email app</a><button class="btn" id="copyAddr">Copy addresses</button></div>
   <p class="status" id="mailStatus"></p>
   ${state.issue === "fir" ? `<p class="help"><strong>Also post a copy.</strong> For a refused FIR, the law (BNSS 173(4)) says to send it by post. Email it now, and post a printed copy too.</p>` : ""}
@@ -1518,7 +1566,7 @@
       function proofText() {
         const it = ISSUES[state.issue];
         const have = it.proof.filter((_, i) => state.proof[i]).map((p) => p[0]);
-        if (state.file && !state.file.reading)
+        if (state.file && !state.file.reading && !state.file.sample)
           have.push(
             state.file.taken
               ? `File: ${state.file.name} (taken ${fmtDate(state.file.taken)})`
@@ -1648,6 +1696,12 @@ Date:`;
           $("#story").oninput = (e) => {
             state.story = e.target.value;
             $("#storyErr").textContent = "";
+            if (state.demo) {
+              state.demo = false;
+              if (state.file?.sample) state.file = null;
+              const n = document.querySelector(".demo");
+              if (n) n.remove();
+            }
           };
           bindNav();
         },
@@ -1681,10 +1735,26 @@ Date:`;
               file: null,
               story: "",
               draft: "",
+              demo: false,
             });
             render();
           };
+          $("#confirmReal").onchange = () => {
+            $("#confirmErr").textContent = "";
+          };
           $("#mail").onclick = (e) => {
+            if (state.demo) {
+              e.preventDefault();
+              $("#confirmErr").textContent =
+                'This is still the example. Tap "Start my own complaint" and write what happened to you first.';
+              return;
+            }
+            if (!$("#confirmReal").checked) {
+              e.preventDefault();
+              $("#confirmErr").textContent =
+                "Tick the box first to confirm this really happened.";
+              return;
+            }
             const list = recipients();
             const subject = `Complaint: ${ISSUES[state.issue].label} by ${FORCES[state.force].toLowerCase()}, ${state.area}, ${whenText()}`;
             e.currentTarget.href =
