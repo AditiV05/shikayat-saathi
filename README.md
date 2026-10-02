@@ -36,3 +36,5 @@ Most people who face a bribe demand, a refused FIR, or rude behaviour from polic
 ## Disclaimer
 
 This is not legal advice. Always confirm the route with the official website before filing.
+
+© 2026 Aditi Vashishtha. All rights reserved.
